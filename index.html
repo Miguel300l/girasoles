@@ -298,10 +298,7 @@
 
                 if (Math.random() > 0.5) {
                     // Emoji normal
-                    const texture = new THREE.TextureLoader().load(
-                        "https://png.pngtree.com/png-vector/20250524/ourmid/pngtree-sunflower-png-flower-sticker-png-image_16372531.png"
-                    );
-
+                    const texture = new THREE.TextureLoader().load("img/girasol.png");
                     const material = new THREE.SpriteMaterial({ map: texture });
                     sprite = new THREE.Sprite(material);
 
@@ -310,10 +307,7 @@
 
                 } else {
                     // Imagen del ramo de girasoles
-                    const texture = new THREE.TextureLoader().load(
-                        "https://stickerly.pstatic.net/sticker_pack/GKxNn91GyJYvRhMszE6eOQ/0TEYRQ/45/-2112009820.png"
-                    );
-
+                    const texture = new THREE.TextureLoader().load("img/ramo_girasol.png");
                     const material = new THREE.SpriteMaterial({ map: texture });
                     sprite = new THREE.Sprite(material);
 
