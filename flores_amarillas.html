@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxia de Flores Amarillas</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: white;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* Deja pasar los clics al canvas 3D */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .titulo {
+            margin-top: 20px;
+            font-size: 28px;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff9800;
+            text-align: center;
+        }
+
+        /* Pantalla de inicio */
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .sunflower-icon {
+            font-size: 100px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 20px #ffeb3b;
+            }
+
+            50% {
+                transform: scale(1.1);
+                text-shadow: 0 0 40px #ffeb3b;
+            }
+
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 20px #ffeb3b;
+            }
+        }
+
+        /* Tarjeta de mensaje final */
+        #message-card {
+            display: none;
+            position: absolute;
+            bottom: 10%;
+            width: 80%;
+            max-width: 400px;
+            background: linear-gradient(to bottom, #ff9800, #ff5722);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 235, 59, 0.5);
+            border: 2px solid #ffeb3b;
+            z-index: 5;
+            pointer-events: auto;
+        }
+
+        #message-card p {
+            font-size: 20px;
+            margin: 0;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+
+    <div id="start-screen" onclick="iniciarExperiencia()" style="text-align: center; cursor: pointer;">
+        <div class="sunflower-icon">
+            <img src="https://png.pngtree.com/png-vector/20250524/ourmid/pngtree-sunflower-png-flower-sticker-png-image_16372531.png"
+                alt="Girasol" style="width: 100px; height: auto;">
+        </div>
+
+        <h2 style="color: #ffeb3b; font-family: sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            Toca para iniciar
+        </h2>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <div class="titulo" id="titulo" style="display:none; text-align: center;">
+            Feliz día de las<br>Flores Amarillas
+            <img src="https://png.pngtree.com/png-vector/20250524/ourmid/pngtree-sunflower-png-flower-sticker-png-image_16372531.png"
+                style="width: 20px; vertical-align: middle;">
+        </div>
+
+        <div id="message-card"
+            style="text-align: center; padding: 20px; border-radius: 15px; background: rgba(14, 11, 11, 0.9); box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <p style="margin: 0; font-size: 1.1em; color: #fff;">
+                Eres una persona llena de luz que ilumina la vida de quienes te rodean.
+                <img src="https://png.pngtree.com/png-vector/20250524/ourmid/pngtree-sunflower-png-flower-sticker-png-image_16372531.png"
+                    alt="Girasol" style="width: 30px; height: auto; vertical-align: middle; margin-left: 5px;">
+            </p>
+
+            <button onclick="document.getElementById('message-card').style.display='none'"
+                style="margin-top:15px; padding:8px 20px; border-radius:10px; border:none; background:#f7e864; color:#5d4037; font-weight:bold; cursor:pointer; transition: transform 0.2s;"
+                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN BÁSICA DE THREE.JS ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.001);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 30, 80);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true; // Hace que la galaxia gire sola
+        controls.autoRotateSpeed = 0.5;
+
+        // --- CREAR EL FONDO DE ESTRELLAS ---
+        const starsGeometry = new THREE.BufferGeometry();
+        const starTexture = new THREE.TextureLoader().load(
+            "https://threejs.org/examples/textures/sprites/disc.png"
+        );
+
+        const starsMaterial = new THREE.PointsMaterial({
+            map: starTexture,
+            color: 0xffffff,
+            size: 0.4,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const starsVertices = [];
+        for (let i = 0; i < 160000; i++) {
+            const x = (Math.random() - 0.5) * 600;
+            const y = (Math.random() - 0.5) * 600;
+            const z = (Math.random() - 0.5) * 600;
+            starsVertices.push(x, y, z);
+        }
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const starField = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(starField);
+
+        // --- CREAR EL CENTRO BRILLANTE (AGUJERO NEGRO / NÚCLEO) ---
+        const coreGeometry = new THREE.TorusGeometry(15, 2, 16, 100);
+        const coreMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffeb3b,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const core = new THREE.Mesh(coreGeometry, coreMaterial);
+
+        core.rotation.x = Math.PI / 2;
+
+        // Estirar hacia derecha e izquierda
+        core.scale.x = 1.5;
+
+        scene.add(core);
+
+        const darkCenterGeo = new THREE.SphereGeometry(14, 32, 32);
+
+        const darkCenterMat = new THREE.MeshBasicMaterial({
+            color: 0x000000,
+            transparent: true,
+            opacity: 0.85
+        });
+
+        const darkCenter = new THREE.Mesh(darkCenterGeo, darkCenterMat);
+
+        scene.add(darkCenter);
+
+        // --- ESTRELLAS DENTRO DEL NÚCLEO ---
+        const coreStarsGeometry = new THREE.BufferGeometry();
+        const coreStarsMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.5
+        });
+
+        const coreStarsVertices = [];
+
+        for (let i = 0; i < 200; i++) {
+
+            const radio = Math.random() * 12;
+            const angulo = Math.random() * Math.PI * 2;
+            const altura = (Math.random() - 0.5) * 10;
+
+            const x = Math.cos(angulo) * radio;
+            const y = altura;
+            const z = Math.sin(angulo) * radio;
+
+            coreStarsVertices.push(x, y, z);
+        }
+
+        coreStarsGeometry.setAttribute(
+            'position',
+            new THREE.Float32BufferAttribute(coreStarsVertices, 3)
+        );
+
+        const coreStars = new THREE.Points(coreStarsGeometry, coreStarsMaterial);
+
+        scene.add(coreStars);
+
+        // --- FUNCIÓN PARA CREAR TEXTOS Y EMOJIS FLOTANTES ---
+        function createTextSprite(message, isEmoji = false) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 512;
+            canvas.height = 128;
+
+            context.font = isEmoji ? "86px Arial" : "30px 'Comic Sans MS', sans-serif";
+            context.fillStyle = isEmoji ? "white" : "#ffffaa";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+
+            if (!isEmoji) {
+                context.shadowColor = "#ffeb3b";
+                context.shadowBlur = 10;
+            }
+            context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(spriteMaterial);
+
+            sprite.scale.set(isEmoji ? 10 : 30, isEmoji ? 2.5 : 7.5, 1);
+            return sprite;
+        }
+
+        // --- AGREGAR LOS MENSAJES Y FLORES A LA GALAXIA ---
+        const mensajes = [
+            "Eres pura alegría", "Un detalle amarillo", "Flores para ti",
+            "Siempre brillas", "Solo para ti", "Eres muy especial",
+            "Un detalle amarillo", "Sonríe siempre",
+            "Eres trabajadora", "Eres responsable", "Eres fuerte", "Tu sonrisa vale oro"
+        ];
+
+        const galaxiaGroup = new THREE.Group();
+        scene.add(galaxiaGroup);
+
+        // Distribuir elementos en forma de disco
+        for (let i = 0; i < 140; i++) {
+            let sprite;
+            if (i % 2 === 0) {
+                // Agregar texto
+                const texto = mensajes[Math.floor(Math.random() * mensajes.length)];
+                sprite = createTextSprite(texto);
+            } else {
+
+                if (Math.random() > 0.5) {
+                    // Emoji normal
+                    const texture = new THREE.TextureLoader().load(
+                        "https://png.pngtree.com/png-vector/20250524/ourmid/pngtree-sunflower-png-flower-sticker-png-image_16372531.png"
+                    );
+
+                    const material = new THREE.SpriteMaterial({ map: texture });
+                    sprite = new THREE.Sprite(material);
+
+                    // tamaño del ramo
+                    sprite.scale.set(5, 5, 1);
+
+                } else {
+                    // Imagen del ramo de girasoles
+                    const texture = new THREE.TextureLoader().load(
+                        "https://stickerly.pstatic.net/sticker_pack/GKxNn91GyJYvRhMszE6eOQ/0TEYRQ/45/-2112009820.png"
+                    );
+
+                    const material = new THREE.SpriteMaterial({ map: texture });
+                    sprite = new THREE.Sprite(material);
+
+                    // tamaño del ramo
+                    sprite.scale.set(6, 6, 1);
+                }
+
+            }
+
+            // Matemáticas para crear una espiral/disco
+            const radio = 30 + Math.random() * 80;
+            const angulo = Math.random() * Math.PI * 2;
+            const altura = (Math.random() - 0.5) * 10; // Variación en el eje Y
+
+            sprite.position.x = Math.cos(angulo) * radio;
+            sprite.position.y = altura;
+            sprite.position.z = Math.sin(angulo) * radio;
+
+            galaxiaGroup.add(sprite);
+        }
+
+        // --- ANIMACIÓN ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); // Necesario para el autoRotate
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- INTERACTIVIDAD ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function iniciarExperiencia() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('titulo').style.display = 'block';
+
+            // Mostrar la tarjeta especial después de 5 segundos
+            setTimeout(() => {
+                document.getElementById('message-card').style.display = 'block';
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>
