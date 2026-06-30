@@ -254,12 +254,12 @@
             canvas.height = 128;
 
             context.font = isEmoji ? "86px Arial" : "30px 'Comic Sans MS', sans-serif";
-            context.fillStyle = isEmoji ? "white" : "#CE53E0";
+            context.fillStyle = isEmoji ? "white" : "#fd3ff1";
             context.textAlign = "center";
             context.textBaseline = "middle";
 
             if (!isEmoji) {
-                context.shadowColor = "#CE53E0";
+                context.shadowColor = "#fd3ff1";
                 context.shadowBlur = 10;
             }
             context.fillText(message, canvas.width / 2, canvas.height / 2);
