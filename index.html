@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxia de Flores Amarillas</title>
+    <title>FELIZ CUMPLEAÑOS</title>
     <style>
         body {
             margin: 0;
@@ -36,8 +36,8 @@
         .titulo {
             margin-top: 20px;
             font-size: 28px;
-            color: #ffeb3b;
-            text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff9800;
+            color: #FFB5C0;
+            text-shadow: 0 0 10px #FFB5C0, 0 0 20px #FFB5C0;
             text-align: center;
         }
 
@@ -66,17 +66,17 @@
         @keyframes pulse {
             0% {
                 transform: scale(1);
-                text-shadow: 0 0 20px #ffeb3b;
+                text-shadow: 0 0 20px #FFB5C0;
             }
 
             50% {
                 transform: scale(1.1);
-                text-shadow: 0 0 40px #ffeb3b;
+                text-shadow: 0 0 40px #FFB5C0;
             }
 
             100% {
                 transform: scale(1);
-                text-shadow: 0 0 20px #ffeb3b;
+                text-shadow: 0 0 20px #FFB5C0;
             }
         }
 
@@ -87,12 +87,12 @@
             bottom: 10%;
             width: 80%;
             max-width: 400px;
-            background: linear-gradient(to bottom, #ff9800, #ff5722);
+            background: linear-gradient(to bottom, #FFB5C0, #FFB5C0);
             border-radius: 15px;
             padding: 20px;
             text-align: center;
             box-shadow: 0 0 30px rgba(255, 235, 59, 0.5);
-            border: 2px solid #ffeb3b;
+            border: 2px solid #FFB5C0;
             z-index: 5;
             pointer-events: auto;
         }
@@ -113,10 +113,10 @@
 
     <div id="start-screen" onclick="iniciarExperiencia()" style="text-align: center; cursor: pointer;">
         <div class="sunflower-icon">
-            <img src="img/girasol.png" alt="Girasol" style="width: 100px; height: auto;">
+            <img src="img/kuromi-removebg-preview.png" alt="Girasol" style="width: 100px; height: auto;">
         </div>
 
-        <h2 style="color: #ffeb3b; font-family: sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+        <h2 style="color: #FFB5C0; font-family: sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
             Toca para iniciar
         </h2>
     </div>
@@ -125,20 +125,23 @@
 
     <div class="ui-layer">
         <div class="titulo" id="titulo" style="display:none; text-align: center;">
-            Feliz día de las<br>Flores Amarillas
-            <img src="img/girasol.png" style="width: 20px; vertical-align: middle;">
+            Feliz cumpleaños mi amor
+            <img src="img/kuromi-removebg-preview.png" style="width:40px; vertical-align: middle;">
         </div>
 
         <div id="message-card"
             style="text-align: center; padding: 20px; border-radius: 15px; background: rgba(14, 11, 11, 0.9); box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
             <p style="margin: 0; font-size: 1.1em; color: #fff;">
-                Eres una persona llena de luz que ilumina la vida de quienes te rodean.
-                <img src="img/girasol.png" alt="Girasol"
+                ❤️ ¡Feliz cumpleaños, mi amor! 🎂<br>
+                Hoy celebro la dicha de tenerte en mi vida. Te deseo un día lleno de amor, sonrisas y momentos
+                inolvidables. Que todos
+                tus sueños se hagan realidad. ¡Te amo y espero compartir muchos cumpleaños más a tu lado!
+                <img src="img/hello-kitty.svg" alt="Girasol"
                     style="width: 30px; height: auto; vertical-align: middle; margin-left: 5px;">
             </p>
 
             <button onclick="document.getElementById('message-card').style.display='none'"
-                style="margin-top:15px; padding:8px 20px; border-radius:10px; border:none; background:#f7e864; color:#5d4037; font-weight:bold; cursor:pointer; transition: transform 0.2s;"
+                style="margin-top:15px; padding:8px 20px; border-radius:10px; border:none; background:#FFB5C0; color:#5d4037; font-weight:bold; cursor:pointer; transition: transform 0.2s;"
                 onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                 Cerrar
             </button>
@@ -190,7 +193,7 @@
 
         const coreGeometry = new THREE.TorusGeometry(15, 2, 16, 100);
         const coreMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffeb3b,
+            color: 0xFFB5C0,
             transparent: true,
             opacity: 0.8
         });
@@ -251,12 +254,12 @@
             canvas.height = 128;
 
             context.font = isEmoji ? "86px Arial" : "30px 'Comic Sans MS', sans-serif";
-            context.fillStyle = isEmoji ? "white" : "#ffffaa";
+            context.fillStyle = isEmoji ? "white" : "#CE53E0";
             context.textAlign = "center";
             context.textBaseline = "middle";
 
             if (!isEmoji) {
-                context.shadowColor = "#ffeb3b";
+                context.shadowColor = "#CE53E0";
                 context.shadowBlur = 10;
             }
             context.fillText(message, canvas.width / 2, canvas.height / 2);
@@ -271,14 +274,28 @@
 
         const loader = new THREE.TextureLoader();
 
-        const girasolTexture = loader.load("img/girasol.png");
-        const ramoTexture = loader.load("img/ramo_girasol.png");
+        const girasolTexture = loader.load("img/kuromi3-removebg-preview.png");
+        const ramoTexture = loader.load("img/kuromi-removebg-preview.png");
 
         const mensajes = [
-            "Eres pura alegría", "Un detalle amarillo", "Flores para ti",
-            "Siempre brillas", "Solo para ti", "Eres muy especial",
-            "Un detalle amarillo", "Sonríe siempre",
-            "Eres trabajadora", "Eres responsable", "Eres fuerte", "Tu sonrisa vale oro"
+            "Feliz cumpleaños, mi amor",
+            "Eres el mejor regalo de mi vida",
+            "Hoy celebro tu hermosa existencia",
+            "Te amo con todo mi corazón",
+            "Que todos tus sueños se hagan realidad",
+            "Cada día a tu lado es un regalo",
+            "Siempre serás mi persona favorita",
+            "Gracias por iluminar mi vida",
+            "Mi corazón siempre será tu hogar",
+            "Feliz cumpleaños, princesa",
+            "Que este día esté lleno de amor",
+            "Contigo todo es más bonito",
+            "Te deseo un año lleno de alegrías",
+            "Cada instante contigo vale oro",
+            "Nunca dejes de sonreír",
+            "Hoy brillas más que nunca",
+            "Mi lugar favorito siempre será contigo",
+            "¡Feliz cumpleaños, mi reina!"
         ];
 
         const galaxiaGroup = new THREE.Group();
